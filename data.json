@@ -1,0 +1,100 @@
+{
+    "batch": {
+        "application": [
+            {
+                "id": "appID 0",
+                "name": "appName 0",
+                "descriptive" : {
+                    "appVersion": "",
+                    "executablepathcontains": "",
+                    "framecontains": "",
+                    "icon": "",
+                    "jvmlocation": "",
+                    "launchwith": "",
+                    "manufacturer": "",
+                    "md5": "",
+                    "openIn": "",
+                    "processcontains": "",
+                    "titlebarcontains": "",
+                    "type": "",
+                    "urlcontains": "",
+                    "version": ""
+                }
+            }
+        ],
+        "manufacturer": [],
+        "field": [
+            {
+                "id": "fieldID 0",
+                "name": "fieldName 0",
+                "descriptive":{
+                    "id": "",
+                    "name": "",
+                    "actions": [
+                        "",
+                        ""
+                    ],
+                    "application": "",
+                    "image": "",
+                    "offset": {},
+                    "path": "",
+                    "variablename": "",
+                    "version": ""
+                }
+            }
+        ],
+        "flow": [
+            {
+            "id": "flowID 0",
+            "name": "flowName 0", 
+            "descriptive": {
+                "id": "",
+                "name": "",
+                "inputs": [],
+                "outputs": [],
+                "application": "",
+                "code": "",
+                "blocklyXml": "",
+                "type": "",
+                "typeConfig": {
+                    "subjectPrefix": "",
+                    "triggers": {
+                        "context": [],
+                        "external": [
+                            {
+                                "configuration": {
+                                    "keys": [
+                                        ""
+                                    ],
+                                    "modifiers": [
+                                        "",
+                                        ""
+                                    ]
+                                },
+                                "externalType": ""
+                            }
+                        ],
+                        "lifecycle": [],
+                        "services": []
+                    }
+                }, 
+                "anchors": [],
+                "usesfields": [],
+                "usesFlows": [],
+                "usesTables": [],
+                "compatibleVersion": "",
+                "hideFromUser": false,
+                "precompile": false,
+                "restoreFocus": false,
+                "isMandatory": false,
+                "autocompleteSnippets": false,
+                "autocompleteTypes": false,
+                "debuggerEnabled": false,
+                "hideInFlowLaunchMenu": false,
+                "icon": "",
+                "version": ""
+                }
+            }
+        ] 
+    }
+}

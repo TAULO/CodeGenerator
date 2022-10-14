@@ -125,6 +125,7 @@ async function callAPI() {
 }
 
 async function main() {
+    console.log("Generating code...")
     // await callAPI()
 }
 main()

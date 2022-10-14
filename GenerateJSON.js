@@ -10,7 +10,6 @@ function generateJSON(appAmount, fieldAmount, tableAmount, flowAmount, jsFiles, 
     for (let i = 1; i <= appAmount; i++) {
         const arr = json.batch.application
         arr.push({
-            ...arr[i - 1],
             ...updateAppObject(v4(), `App Name ${i}`)
         })
     }
@@ -18,7 +17,6 @@ function generateJSON(appAmount, fieldAmount, tableAmount, flowAmount, jsFiles, 
     for (let i = 1; i <= fieldAmount; i++) {
         const arr = json.batch.field
         arr.push({
-            ...arr[i - 1],
             ...updateFieldObject(v4(), `Field Name ${i}`)
         })
     }
@@ -26,23 +24,31 @@ function generateJSON(appAmount, fieldAmount, tableAmount, flowAmount, jsFiles, 
     for (let i = 1; i <= tableAmount; i++) {
         const arr = json.batch.table
         arr.push({
-            ...arr[i - 1],
             ...updateTableObject(v4(), `Table Name ${i}`)
         })
     }
 
-
     for (let i = 1; i <= flowAmount; i++) {
         const arr = json.batch.flow
         arr.push({
-            ...arr[i - 1],
             ...updateFlowObject(v4(), `Flow Name ${i}`, jsFilesArr[i - 1])
         })
     }
-    fs.writeFileSync("./GeneratedData/GeneratedJSONdata.json", JSON.stringify(toJSONFile), (err) => err ? console.log(err) : console.log("success"))
+    
+    if (fs.readdirSync("./GeneratedData")[0] === undefined) {
+        fs.writeFileSync("./GeneratedData/GeneratedJSONdata.json", JSON.stringify(toJSONFile))
+    } else {
+        fs.unlinkSync("./GeneratedData/GeneratedJSONdata.json")
+        fs.writeFileSync("./GeneratedData/GeneratedJSONdata.json", JSON.stringify(toJSONFile))
+    }
+}
+
+function isEmpty(arr) {
+    return arr[arr.length - 1] === undefined
 }
 
 async function main() {
-    generateJSON(5, 5, 10, 1, getJSFilesFromFolder(), json)
+    console.log("Generating JSON...")
+    generateJSON(5, 5, 5, 1, getJSFilesFromFolder(), json)
 }
 main()

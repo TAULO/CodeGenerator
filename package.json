@@ -2,6 +2,7 @@
   "dependencies": {
     "@octokit/core": "^4.0.5",
     "axios": "^1.1.2",
+    "dotenv": "^16.0.3",
     "js-file-downloader": "^1.1.24",
     "uuidv4": "^6.2.13"
   }

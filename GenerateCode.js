@@ -2,6 +2,15 @@ const { v4 } = require("uuid")
 const fs = require("fs")
 const axios = require("axios")
 const { Octokit } = require("@octokit/core");
+const sleep = require('util').promisify(setTimeout)
+
+require('dotenv').config();
+
+const fgRed = "\x1b[31m"
+const fgGreen = "\x1b[32m"
+const fgYellow = "\x1b[33m"
+const fgBlue = "\x1b[34m"
+const fgWhite = "\x1b[37m"
 
 async function getRateLimit(octokit) {
     const rate = await octokit.request('GET /rate_limit', {})
@@ -16,33 +25,63 @@ function getJSFilesFromFolder() {
     return jsFiles.map(file => fs.readFileSync(`./JSFiles/${file}`).toString())
 }
 
+let page = 1
+const per_page = 100
+let min_size = 2000
+let max_size = 2100
 async function getJSCodeFromGithub(octokit) {
-    let page = 100
-    const searchCodeRes = await octokit.request(`GET /search/code?q=extension:js+language:JavaScript?page:${page}`, {
+    const requestURL = `GET /search/code?q=extension:js+language:JavaScript+size:${min_size}..${max_size}`
+    let searchCodeRes = await octokit.request(`${requestURL}&page=${page}&per_page=${per_page}`, {
         headers: {
-            authorization: "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"
+            authorization: process.env.PRIVATE_TOKEN
         }
     })
-    const linkArr = searchCodeRes.data.items.map(item => item.url)
+    let linkArr = searchCodeRes.data.items.map(item => item.url)
     const jsFilesArr = []
 
-    for (let i = 0; i < 5; i++) {
-        const downloadLinkRes = await axios.get(linkArr[i])
-        const { name, download_url } = downloadLinkRes.data
+    console.log(fgBlue, `Total files: ${getJSFilesFromFolder().length}`)
+    console.log(fgBlue, `Searching through ${linkArr.length} files...`)
 
-        const rawFileRes = await axios.get(download_url)
-        if (getJSFilesFromFolder().includes(rawFileRes.data)) {
-            console.log(name + " already exits")
-            page++
-            break;
+    for (let i = 0; i < linkArr.length; i++) {
+        const index = i + 1
+        const { rate, search } = await getRateLimit(octokit)
+        console.log(fgWhite, `Search limit: ${search.remaining} -- Rate limit: ${rate.remaining}`)
+        console.log(fgWhite, `Searching on page: ${page} -- index: ${index}`)
+
+        const downloadLinkRes = await axios.get(linkArr[i], {
+            headers: {"Authorization": process.env.PRIVATE_TOKEN}
+        })
+        const { name, content, path } = downloadLinkRes.data
+        const rawFileData = Buffer.from(content, "base64").toString() 
+
+        // const lastDownloadLinkRes = await axios.get(linkArr[linkArr.length - 1], {
+        //     headers: {"Authorization": process.env.PRIVATE_TOKEN}
+        // })
+        // const lastRawFileData = Buffer.from(lastDownloadLinkRes.data.content, "base64").toString()
+        // if (getJSFilesFromFolder().includes(lastRawFileData)) {
+        //     console.log("The last file:", name, "already exits on page", page)
+        //     page++
+        //     console.log("Current page:", page)
+        //     console.log("Waiting 60 seconds for next api call")
+        //     await sleep(60000)
+
+        //     searchCodeRes = await octokit.request(`${requestURL}&page=${page}&per_page=${per_page}`, {
+        //         headers: {
+        //             authorization: process.env.PRIVATE_TOKEN
+        //         }
+        //     })
+        //     linkArr = searchCodeRes.data.items.map(item => item.url)
+        // } else 
+        if (getJSFilesFromFolder().includes(rawFileData)) {
+            console.log(fgYellow, `${name} already exits on page ${page} and index ${index}`)
         } else {
             jsFilesArr.push({
                 fileName: name,
-                data: rawFileRes.data
+                data: rawFileData
             })
+            console.log(fgGreen, `Added: ${name} from ${path} to jsFilesArr`)
         }
     }
-    console.log("Page:", page)
     return jsFilesArr
 }
 
@@ -50,31 +89,43 @@ async function writeJSFilesToFolder(arr) {
     const jsFilesArr = await arr
 
     jsFilesArr.forEach(file => {
-        fs.appendFileSync(`./JSFiles/${v4()}____${file.fileName}`, file.data, (err) => err ? console.log(err) : console.log("success"))
-        console.log(`Added {${file.fileName}} to ./JSFiles`)
+        fs.appendFileSync(`./JSFiles/${v4()}____${file.fileName}`, file.data, (err) => err ? console.log(err) : console.log("Great Success!"))
+        console.log(fgBlue, `Added {${file.fileName}} to ./JSFiles`)
     })
+    console.log(console.log(fgBlue, `${jsFilesArr.length} files added`))
+}
+
+
+async function callAPI() {
+    const octokit = new Octokit({
+        auth: process.env.PRIVATE_TOKEN
+    })
+    for (let i = 0; i < 1000; i++) {
+        const { rate, search } = await getRateLimit(octokit)
+        if (search.remaining < 3 || rate.remaining < 200) {
+            const wait = 15 * 6000 
+            console.log(fgRed, `API Rate limit almost reached. Requsting in ${wait} seconds...`)
+            console.log(fgWhite, "Search limit: " + search.remaining, "Rate limit: " + rate.remaining)
+            await sleep(wait)
+            await writeJSFilesToFolder(await getJSCodeFromGithub(octokit))
+        } else {
+            console.log(fgWhite, "Requesting...")
+            await writeJSFilesToFolder(await getJSCodeFromGithub(octokit))
+            console.log(fgWhite, "Search limit: " + search.remaining, "Rate limit: " + rate.remaining)
+            console.log(fgWhite, "Waiting 60 seconds for next request")
+            page++
+            if (page > 2) {
+                min_size += 1000
+                max_size += 1000
+                page = 1
+            }
+            await sleep(60000)
+        }
+    }
 }
 
 async function main() {
-    const octokit = new Octokit({
-        auth: "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"
-    })
-
-    const { rate, search } = await getRateLimit(octokit)
-    for (let i = 0; i < 1; i++) {
-        if (search.remaining < 3 || rate.remaining < 5) {
-            console.log("API Rate limit almost reached. Requsting in 60 seconds...", "Search limit: " + search.remaining, "Rate limit: " + rate.remaining)
-            setTimeout(async () => {
-                writeJSFilesToFolder(await getJSCodeFromGithub(octokit))
-            }, 60000)    
-        } else {
-            console.log("Requsting in 20 seconds...")
-            setTimeout(async () => {
-                writeJSFilesToFolder(await getJSCodeFromGithub(octokit))
-                console.log("Search limit: " + search.remaining, "Rate limit: " + rate.remaining)
-            }, 20000)
-        }
-    }
+    // await callAPI()
 }
 main()
 

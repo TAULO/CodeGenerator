@@ -1,0 +1,12 @@
+Object.extend(switchvox.lang._LANG.keys,{T_REQUIRE_PASSWORD:["Do not require password as long as caller is calling from their own extension"],
+T_SAVE_EXTENSION:["Save Extension"],
+T_SAVING_EXTENSION:["Saving Extension"],
+T_SUCCESS_EXTENSION:["Successfully Created Your Extension.  Redirection"],
+T_VOICEMAIL_ACCESS:["Voicemail Access Extension"],
+T_MODIFY_VOICEMAIL_ACCESS:["Voicemail Access Extension"],
+T_VOICEMAIL_ACCESS_SETTINGS:["Voicemail Access Settings"],
+T_BLURB:["Create or modify a voicemail access extension."],
+T_VOICEMAIL_ACCESS_EXTENSION:["Voicemail Access Extension"],
+T_SAVE_VOICEMAIL:["Save Voicemail Access Extension"],
+T_UPDATE_MSG:["Voicemail Access Extension has been saved."],
+});

@@ -23,8 +23,9 @@ async function getRateLimit(octokit) {
 
 let page = 1
 const per_page = 100
-let min_size = 2000
-let max_size = 2100
+let min_size = 22000
+let max_size = 23000
+
 async function getJSCodeFromGithub(octokit) {
     const requestURL = `GET /search/code?q=extension:js+language:JavaScript+size:${min_size}..${max_size}`
     let searchCodeRes = await octokit.request(`${requestURL}&page=${page}&per_page=${per_page}`, {
@@ -32,7 +33,7 @@ async function getJSCodeFromGithub(octokit) {
             authorization: process.env.PRIVATE_TOKEN
         }
     })
-    let linkArr = searchCodeRes.data.items.map(item => item.url)
+    const linkArr = searchCodeRes.data.items.map(item => item.url)
     const jsFilesArr = []
 
     console.log(fgBlue, `Total files: ${getJSFilesFromFolder().length}`)
@@ -84,13 +85,12 @@ async function getJSCodeFromGithub(octokit) {
 async function writeJSFilesToFolder(arr) {
     const jsFilesArr = await arr
 
-    jsFilesArr.forEach(file => {
-        fs.appendFileSync(`./JSFiles/${v4()}____${file.fileName}`, file.data, (err) => err ? console.log(err) : console.log("Great Success!"))
-        console.log(fgBlue, `Added {${file.fileName}} to ./JSFiles`)
+    jsFilesArr.forEach(async (file) => {
+        fs.appendFileSync(`./JSFiles/${v4()}____${file.fileName}`, file.data)
+        console.log(fgBlue, `Added: {${file.fileName}} to ./JSFiles`)
     })
     console.log(console.log(fgBlue, `${jsFilesArr.length} files added`))
 }
-
 
 async function callAPI() {
     const octokit = new Octokit({
@@ -99,8 +99,8 @@ async function callAPI() {
     for (let i = 0; i < 1000; i++) {
         const { rate, search } = await getRateLimit(octokit)
         if (search.remaining < 3 || rate.remaining < 200) {
-            const wait = 15 * 6000 
-            console.log(fgRed, `API Rate limit almost reached. Requsting in ${wait} seconds...`)
+            const wait = 15 * 6000
+            console.log(fgRed, `API Rate limit almost reached. Requesting in ${wait / 6000} minutes...`)
             console.log(fgWhite, "Search limit: " + search.remaining, "Rate limit: " + rate.remaining)
             await sleep(wait)
             await writeJSFilesToFolder(await getJSCodeFromGithub(octokit))
@@ -110,7 +110,7 @@ async function callAPI() {
             console.log(fgWhite, "Search limit: " + search.remaining, "Rate limit: " + rate.remaining)
             console.log(fgWhite, "Waiting 60 seconds for next request")
             page++
-            if (page > 2) {
+            if (page > 10) {
                 min_size += 1000
                 max_size += 1000
                 page = 1

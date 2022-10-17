@@ -1,36 +1,38 @@
+const { rndStr } = require("./RandomData")
+
 function updateFlowObject(id, name, code) {
     return {
         "id": id,
         "name": name,
         "descriptive": {
-            "id": "",
-            "name": "",
-            "inputs": [],
-            "outputs": [],
-            "application": "",
+            "id": rndStr(),
+            "name": rndStr(),
+            "inputs": [rndStr(), rndStr()],
+            "outputs": [rndStr(), rndStr()],
+            "application": rndStr(),
             "code": code,
-            "blocklyXml": "",
-            "type": "",
+            "blocklyXml": rndStr(),
+            "type": rndStr(),
             "typeConfig": {
-                "subjectPrefix": "",
+                "subjectPrefix": rndStr(),
                 "triggers": {
-                    "context": [],
+                    "context": [rndStr(), rndStr()],
                     "external": [{
                         "configuration": {
-                            "keys": [""],
-                            "modifiers": ["", ""]
+                            "keys": [rndStr()],
+                            "modifiers": [rndStr(), rndStr()]
                         },
-                        "externalType": ""
+                        "externalType": rndStr()
                     }],
-                    "lifecycle": [],
-                    "services": []
+                    "lifecycle": [rndStr(), rndStr()],
+                    "services": [rndStr(), rndStr()]
                 }
             },
-            "anchors": [],
-            "usesfields": [],
-            "usesFlows": [],
-            "usesTables": [],
-            "compatibleVersion": "",
+            "anchors": [rndStr(), rndStr()],
+            "usesfields": [rndStr(), rndStr()],
+            "usesFlows": [rndStr(), rndStr()],
+            "usesTables": [rndStr(), rndStr()],
+            "compatibleVersion": rndStr(),
             "hideFromUser": false,
             "precompile": false,
             "restoreFocus": false,
@@ -39,8 +41,8 @@ function updateFlowObject(id, name, code) {
             "autocompleteTypes": false,
             "debuggerEnabled": false,
             "hideInFlowLaunchMenu": false,
-            "icon": "",
-            "version": ""
+            "icon": rndStr(),
+            "version": rndStr()
         }
     }
 }
@@ -50,20 +52,20 @@ function updateAppObject(id, name) {
         "id": id,
         "name": name,
         "descriptive": {
-            "appVersion": "",
-            "executablepathcontains": "",
-            "framecontains": "",
-            "icon": "",
-            "jvmlocation": "",
-            "launchwith": "",
-            "manufacturer": "",
-            "md5": "",
-            "openIn": "",
-            "processcontains": "",
-            "titlebarcontains": "",
-            "type": "",
-            "urlcontains": "",
-            "version": ""
+            "appVersion": rndStr(),
+            "executablepathcontains": rndStr(),
+            "framecontains": rndStr(),
+            "icon": rndStr(),
+            "jvmlocation": rndStr(),
+            "launchwith": rndStr(),
+            "manufacturer": rndStr(),
+            "md5": rndStr(),
+            "openIn": rndStr(),
+            "processcontains": rndStr(),
+            "titlebarcontains": rndStr(),
+            "type": rndStr(),
+            "urlcontains": rndStr(),
+            "version": rndStr()
         }
     }
 }
@@ -73,15 +75,15 @@ function updateFieldObject(id, name) {
         "id": id,
         "name": name,
         "descriptive": {
-            "id": "",
-            "name": "",
-            "actions": ["", ""],
-            "application": "",
-            "image": "",
-            "offset": {},
-            "path": "",
-            "variablename": "",
-            "version": ""
+            "id": rndStr(),
+            "name": rndStr(),
+            "actions": [rndStr(), rndStr()],
+            "application": rndStr(),
+            "image": rndStr(),
+            "offset": {"offset":  rndStr()},
+            "path": rndStr(),
+            "variablename": rndStr(),
+            "version": rndStr()
         }
     }
 }

@@ -35,10 +35,15 @@ function generateJSON(appAmount, fieldAmount, tableAmount, flowAmount, jsFiles, 
     }
 
     if (fs.readdirSync(__dirname + "/GeneratedJSONData")[0] === undefined) {
-        fs.writeFileSync(__dirname + "/GeneratedJSONData/GeneratedJSONdata.json", JSON.stringify(json))
+        // fs.writeFileSync("/GeneratedJSONData/GeneratedJSONdata.json", JSON.stringify(json))
+        const stream = fs.createWriteStream(__dirname + "/GeneratedJSONData/GeneratedJSONdata.json")
+        stream.write(JSON.stringify(json), (data) => console.log(data))
     } else {
         fs.unlinkSync(__dirname + "/GeneratedJSONData/GeneratedJSONdata.json")
-        fs.writeFileSync(__dirname + "/GeneratedJSONData/GeneratedJSONdata.json", JSON.stringify(json))
+        // fs.writeFileSync(__dirname + "/GeneratedJSONData/GeneratedJSONdata.json", JSON.stringify(json))
+        const stream = fs.createWriteStream(__dirname + "/GeneratedJSONData/GeneratedJSONdata.json")
+        stream.write(JSON.stringify(json), (data) => console.log(data))
+        
     }
 }
 

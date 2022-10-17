@@ -4,6 +4,7 @@ const { updateFlowObject, updateFieldObject, updateAppObject, updateTableObject 
 
 function generateJSON(appAmount, fieldAmount, tableAmount, flowAmount, jsFiles, json) {
     console.log("Generating JSON...")
+    
     const jsFilesArr = jsFiles
     
     for (let i = 1; i <= appAmount; i++) {
@@ -37,13 +38,12 @@ function generateJSON(appAmount, fieldAmount, tableAmount, flowAmount, jsFiles, 
     if (fs.readdirSync(__dirname + "/GeneratedJSONData")[0] === undefined) {
         // fs.writeFileSync("/GeneratedJSONData/GeneratedJSONdata.json", JSON.stringify(json))
         const stream = fs.createWriteStream(__dirname + "/GeneratedJSONData/GeneratedJSONdata.json")
-        stream.write(JSON.stringify(json), (data) => console.log(data))
+        stream.write(JSON.stringify(json), (err) => err ? console.log(err) : console.log("success"))
     } else {
         fs.unlinkSync(__dirname + "/GeneratedJSONData/GeneratedJSONdata.json")
         // fs.writeFileSync(__dirname + "/GeneratedJSONData/GeneratedJSONdata.json", JSON.stringify(json))
         const stream = fs.createWriteStream(__dirname + "/GeneratedJSONData/GeneratedJSONdata.json")
-        stream.write(JSON.stringify(json), (data) => console.log(data))
-        
+        stream.write(JSON.stringify(json), (err) => err ? console.log(err) : console.log("success"))
     }
 }
 

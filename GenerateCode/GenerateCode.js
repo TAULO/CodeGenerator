@@ -21,8 +21,8 @@ async function getRateLimit(octokit) {
     }
 }
 
-let page = 1
-const per_page = 100
+let page = 100
+const per_page = 10
 let min_size = 24000
 let max_size = 25000
 
@@ -98,6 +98,7 @@ async function callAPI() {
 function generateCode() {
     console.log("Generating code...")
     callAPI()
+    .catch(e => console.log(e))
 }
 
 module.exports = { generateCode }

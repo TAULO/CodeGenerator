@@ -23,8 +23,8 @@ async function getRateLimit(octokit) {
 
 let page = 1
 const per_page = 100
-let min_size = 22000
-let max_size = 23000
+let min_size = 24000
+let max_size = 25000
 
 async function getJSCodeFromGithub(octokit) {
     const requestURL = `GET /search/code?q=extension:js+language:JavaScript+size:${min_size}..${max_size}`
@@ -43,7 +43,7 @@ async function getJSCodeFromGithub(octokit) {
         const index = i + 1
         const { rate, search } = await getRateLimit(octokit)
         console.log(fgWhite, `Search limit: ${search.remaining} -- Rate limit: ${rate.remaining}`)
-        console.log(fgWhite, `Searching on page: ${page} -- index: ${index}`)
+        console.log(fgWhite, `Searching on page: ${page}/10 at index: ${index}/${linkArr.length}`)
 
         const downloadLinkRes = await axios.get(linkArr[i], {
             headers: {"Authorization": process.env.PRIVATE_TOKEN}
@@ -51,45 +51,20 @@ async function getJSCodeFromGithub(octokit) {
         const { name, content, path } = downloadLinkRes.data
         const rawFileData = Buffer.from(content, "base64").toString() 
 
-        // const lastDownloadLinkRes = await axios.get(linkArr[linkArr.length - 1], {
-        //     headers: {"Authorization": process.env.PRIVATE_TOKEN}
-        // })
-        // const lastRawFileData = Buffer.from(lastDownloadLinkRes.data.content, "base64").toString()
-        // if (getJSFilesFromFolder().includes(lastRawFileData)) {
-        //     console.log("The last file:", name, "already exits on page", page)
-        //     page++
-        //     console.log("Current page:", page)
-        //     console.log("Waiting 60 seconds for next api call")
-        //     await sleep(60000)
-
-        //     searchCodeRes = await octokit.request(`${requestURL}&page=${page}&per_page=${per_page}`, {
-        //         headers: {
-        //             authorization: process.env.PRIVATE_TOKEN
-        //         }
-        //     })
-        //     linkArr = searchCodeRes.data.items.map(item => item.url)
-        // } else 
         if (getJSFilesFromFolder().includes(rawFileData)) {
-            console.log(fgYellow, `${name} already exits on page ${page} and index ${index}`)
+            console.log(fgYellow, `${name} already exits on page ${page} at ${index}`)
         } else {
             jsFilesArr.push({
                 fileName: name,
                 data: rawFileData
             })
-            console.log(fgGreen, `Added: ${name} from ${path} to jsFilesArr`)
+            fs.appendFileSync(`./JSFiles/${v4()}____${name}`, rawFileData)
+            console.log(fgGreen, `Added: ${name} from ${path} to ./JSFiles`)
         }
     }
-    return jsFilesArr
-}
-
-async function writeJSFilesToFolder(arr) {
-    const jsFilesArr = await arr
-
-    jsFilesArr.forEach(async (file) => {
-        fs.appendFileSync(`./JSFiles/${v4()}____${file.fileName}`, file.data)
-        console.log(fgBlue, `Added: {${file.fileName}} to ./JSFiles`)
-    })
+    jsFilesArr.forEach(file => console.log(fgBlue, `Added:  {${file.fileName}}`))
     console.log(console.log(fgBlue, `${jsFilesArr.length} files added`))
+    return jsFilesArr
 }
 
 async function callAPI() {
@@ -101,13 +76,13 @@ async function callAPI() {
         if (search.remaining < 3 || rate.remaining < 200) {
             const wait = 15 * 6000
             console.log(fgRed, `API Rate limit almost reached. Requesting in ${wait / 6000} minutes...`)
-            console.log(fgWhite, "Search limit: " + search.remaining, "Rate limit: " + rate.remaining)
+            console.log(fgWhite, `Search limit: ${search.remaining} -- Rate limit: ${rate.remaining}`)
             await sleep(wait)
-            await writeJSFilesToFolder(await getJSCodeFromGithub(octokit))
+            await getJSCodeFromGithub(octokit)
         } else {
             console.log(fgWhite, "Requesting...")
-            await writeJSFilesToFolder(await getJSCodeFromGithub(octokit))
-            console.log(fgWhite, "Search limit: " + search.remaining, "Rate limit: " + rate.remaining)
+            await getJSCodeFromGithub(octokit)
+            console.log(fgWhite, `Search limit: ${search.remaining} -- Rate limit: ${rate.remaining}`)
             console.log(fgWhite, "Waiting 60 seconds for next request")
             page++
             if (page > 10) {

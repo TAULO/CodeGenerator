@@ -6,6 +6,6 @@ const { getJSFilesFromFolder } = require("./GetJSFiles")
 
 
 function main() {
-    generateJSON(1, 1, 1, getJSFilesFromFolder(), json)
+    generateJSON(5, 5, 5, getJSFilesFromFolder(), json)
 }
 main()

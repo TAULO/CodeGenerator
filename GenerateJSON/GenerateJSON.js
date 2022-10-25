@@ -2,13 +2,15 @@ const fs = require("fs")
 const { v4 } = require("uuid")
 const { updateFlowObject, updateFieldObject, updateAppObject, updateTableObject } = require("./UpdateJSONObject")
 const JSONStream = require( "JSONStream" );
+const bigJSON = require('big-json');
+
 
 function generateJSON(appAmount, fieldAmount, tableAmount, jsFiles, json) {
     console.log("Generating JSON...")
+
     const jsonStream = JSONStream.stringify()
     const jsFilesArr = jsFiles
 
-    jsonStream.write(json)
 
     for (let i = 1; i <= appAmount; i++) {
         const arr = json.batch.application
@@ -39,7 +41,10 @@ function generateJSON(appAmount, fieldAmount, tableAmount, jsFiles, json) {
     }
 
     try {
-        const stream = fs.createWriteStream(__dirname + "/GeneratedJSONData/GeneratedJSONdata.json")
+        // const stream = fs.createWriteStream(__dirname + "/GeneratedJSONData/GeneratedJSONdata.json")
+
+        const stream = fs.createWriteStream(__dirname + "/GeneratedJSONdata.json")
+
         // if (fs.readdirSync(__dirname + "/GeneratedJSONData")[0] === undefined) {
         //     // fs.writeFileSync("/GeneratedJSONData/GeneratedJSONdata.json", JSON.stringify(json))
         //     stream.write(json, (err) => err ? console.log(err) : console.log("success"))
@@ -50,23 +55,32 @@ function generateJSON(appAmount, fieldAmount, tableAmount, jsFiles, json) {
         //     stream.write(json, (err) => err ? console.log(err) : console.log("success"))   
         //     // fs.writeFile("/GeneratedJSONData/GeneratedJSONdata.json", JSON.stringify(json), (err) => err ? console.log(err) : console.log("success"))
         // }
-        jsonStream.pipe(stream) 
 
-        json.batch.application.forEach( jsonStream.write )
-        json.batch.field.forEach( jsonStream.write )
-        json.batch.table.forEach( jsonStream.write )
-        json.batch.flow.forEach( jsonStream.write )
+        // jsonStream.pipe(stream) 
 
-        jsonStream.end()
+        // json.batch.application.forEach( jsonStream.write )
+        // json.batch.field.forEach( jsonStream.write )
+        // json.batch.table.forEach( jsonStream.write )
+        // json.batch.flow.forEach( jsonStream.write )
+
+        // jsonStream.end()
+
+        const stringifyStream = bigJSON.createStringifyStream({
+            body: json
+        });
+
+        stringifyStream.on('data', function(strChunk) {
+            fs.appendFileSync("GeneratedJSONdata.json", strChunk)
+            console.log(strChunk)
+        });
 
         stream.on(
             "finish",
-            function handleFinish() {
+            () => {
                 console.log("Done");
             }
         );
 
-        // fs.appendFileSync("GeneratedJSONdata.json", jsonStream)
     } catch (e) {
         console.log(e)
     }

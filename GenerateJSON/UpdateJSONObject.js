@@ -1,4 +1,4 @@
-const { rndStr } = require("./RandomData")
+import rndStr from "./RandomData.js"
 
 function updateFlowObject(id, name, code) {
     return {
@@ -99,4 +99,4 @@ function updateTableObject(id, name) {
     }
 }
 
-module.exports = { updateAppObject, updateFieldObject, updateFlowObject, updateTableObject }
+export { updateAppObject, updateFieldObject, updateFlowObject, updateTableObject }

@@ -1,0 +1,32 @@
+services:
+  kwanza:
+    image: registry.gitlab.com/sirenia/kwanza:unstable
+    restart: unless-stopped
+    environment:
+      KWANZA_NAME: TEST
+      KWANZA_DATABASE: pg://postgres:postgres@postgres/kwanza
+      KWANZA_AUTOCERTLOCALCACHEDIR: /cert
+      KWANZA_CERT_SUBJECTS: localhost,localhost.sirenia.io,bigmac.sirenia.io
+      KWANZA_CERT: /cert/cert.pem
+      KWANZA_KEY: /cert/key.pem
+      KWANZA_SALT: kwanzified
+      KWANZA_AUTH: jwt
+      KWANZA_COLOR: red
+      KWANZA_CLUSTER: "true"
+    ports:
+      - 9000:9000
+      - 9001:9001
+    volumes:
+      - .:/etc/sirenia/kwanza
+      - ./cert:/cert
+    depends_on:
+      - postgres
+  postgres:
+    image: postgres:10
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+      PGDATA: "/data"
+    volumes:
+      - "./data:/data"
+    ports:
+      - 6433:6432

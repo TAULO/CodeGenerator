@@ -1,16 +1,18 @@
-const fs = require("fs")
-const { v4 } = require("uuid")
-const { updateFlowObject, updateFieldObject, updateAppObject, updateTableObject } = require("./UpdateJSONObject")
-const JSONStream = require( "JSONStream" );
-const bigJSON = require('big-json');
+import { createWriteStream, appendFileSync } from "fs";
+import { v4 } from "uuid";
+// import default from "./UpdateJSONObject";
+import { updateFlowObject, updateFieldObject, updateAppObject, updateTableObject } from "./UpdateJSONObject.js";
+import { createStringifyStream } from 'big-json';
+import path from 'path';
+
+const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
 
 function generateJSON(appAmount, fieldAmount, tableAmount, jsFiles, json) {
     console.log("Generating JSON...")
 
-    const jsonStream = JSONStream.stringify()
-    const jsFilesArr = jsFiles
-
+    // const jsonStream = stringify()
+    // const jsFilesArr = jsFiles
 
     for (let i = 1; i <= appAmount; i++) {
         const arr = json.batch.application
@@ -24,6 +26,7 @@ function generateJSON(appAmount, fieldAmount, tableAmount, jsFiles, json) {
         arr.push({
             ...updateFieldObject(v4(), `Field Name ${i}`)
         })
+        console.log("Field: " + i)
     }
 
     for (let i = 1; i <= tableAmount; i++) {
@@ -31,59 +34,41 @@ function generateJSON(appAmount, fieldAmount, tableAmount, jsFiles, json) {
         arr.push({
             ...updateTableObject(v4(), `Table Name ${i}`)
         })
+        console.log("Table: " + i)
     }
 
     for (let i = 1; i <= 5; i++) {
         const arr = json.batch.flow
         arr.push({
-            ...updateFlowObject(v4(), `Flow Name ${i}`, jsFilesArr[i - 1])
+            // ...updateFlowObject(v4(), `Flow Name ${i}`, jsFilesArr[i - 1])
         })
     }
 
-    try {
-        // const stream = fs.createWriteStream(__dirname + "/GeneratedJSONData/GeneratedJSONdata.json")
+    return json
 
-        const stream = fs.createWriteStream(__dirname + "/GeneratedJSONdata.json")
+    // try {
+    //     const filePath = path.join(__dirname, '/GeneratedJSONdata.json')
+    //     const decodedFilePath = decodeURIComponent(filePath);
+    //     const stream = createWriteStream(decodedFilePath);
+    //     const stringifyStream = createStringifyStream({
+    //         body: json
+    //     });
 
-        // if (fs.readdirSync(__dirname + "/GeneratedJSONData")[0] === undefined) {
-        //     // fs.writeFileSync("/GeneratedJSONData/GeneratedJSONdata.json", JSON.stringify(json))
-        //     stream.write(json, (err) => err ? console.log(err) : console.log("success"))
-        //     // fs.writeFile("/GeneratedJSONData/GeneratedJSONdata.json", JSON.stringify(json), (err) => err ? console.log(err) : console.log("success"))
-        // } else {
-        //     fs.unlinkSync(__dirname + "/GeneratedJSONData/GeneratedJSONdata.json")
-        //     // fs.writeFileSync(__dirname + "/GeneratedJSONData/GeneratedJSONdata.json", JSON.stringify(json))
-        //     stream.write(json, (err) => err ? console.log(err) : console.log("success"))   
-        //     // fs.writeFile("/GeneratedJSONData/GeneratedJSONdata.json", JSON.stringify(json), (err) => err ? console.log(err) : console.log("success"))
-        // }
+    //     stringifyStream.on('data', (strChunk) => {
+    //         appendFileSync("GeneratedJSONdata.json", strChunk)
+    //         console.log(strChunk)
+    //     });
 
-        // jsonStream.pipe(stream) 
+    //     stream.on(
+    //         "finish",
+    //         () => {
+    //             console.log("Done");
+    //         }
+    //     );
 
-        // json.batch.application.forEach( jsonStream.write )
-        // json.batch.field.forEach( jsonStream.write )
-        // json.batch.table.forEach( jsonStream.write )
-        // json.batch.flow.forEach( jsonStream.write )
-
-        // jsonStream.end()
-
-        const stringifyStream = bigJSON.createStringifyStream({
-            body: json
-        });
-
-        stringifyStream.on('data', function(strChunk) {
-            fs.appendFileSync("GeneratedJSONdata.json", strChunk)
-            console.log(strChunk)
-        });
-
-        stream.on(
-            "finish",
-            () => {
-                console.log("Done");
-            }
-        );
-
-    } catch (e) {
-        console.log(e)
-    }
+    // } catch (e) {
+    //     console.log(e)
+    // }
 }
 
-module.exports = { generateJSON }
+export default generateJSON

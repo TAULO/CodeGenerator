@@ -9,4 +9,4 @@ function rndStr() {
     return str
 }
 
-module.exports = { rndStr }
+export default rndStr

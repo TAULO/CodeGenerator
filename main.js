@@ -1,8 +1,7 @@
-const { generateJSON }  = require("./GenerateJSON/GenerateJSON.js")
-const { generateCode } = require("./GenerateCode/GenerateCode")
+import generateJSON from "./GenerateJSON/GenerateJSON.js"
 
-const json = require("./GenerateJSON/data.json")
-const { getJSFilesFromFolder } = require("./GetJSFiles")
+import json from "./GenerateJSON/data.json" assert { type: "json" }
+import getJSFilesFromFolder from "./GetJSFiles.js"
 
 
 function main() {

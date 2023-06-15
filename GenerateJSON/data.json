@@ -1,9 +1,9 @@
 {
     "batch": {
         "application": [{
-            "id": "appID 0",
-            "name": "appName 0",
+            "id": "test1",
             "descriptive": {
+                "name": "test1",
                 "appVersion": "",
                 "executablepathcontains": "",
                 "framecontains": "",
@@ -22,16 +22,15 @@
         }],
         "manufacturer": [],
         "field": [{
-            "id": "fieldID 0",
-            "name": "fieldName 0",
+            "id": "test1",
             "descriptive": {
-                "id": "",
-                "name": "",
+                "id": "test1",
+                "name": "test1",
+                "application": "test1",
                 "actions": [
                     "",
                     ""
                 ],
-                "application": "",
                 "image": "",
                 "offset": {},
                 "path": "",
@@ -40,45 +39,24 @@
             }
         }],
         "table": [{
-            "id": "tableID 0",
-            "name": "tableName 0",
+            "id": "test1",
+            "name": "test1",
             "descriptive": {
                 "csv": "",
-                "name": "tableName 0"
+                "name": "test1"
             }
         }],
         "flow": [{
-            "id": "flowID 0",
-            "name": "flowName 0",
+            "id": "test1",
             "descriptive": {
-                "id": "",
-                "name": "",
+                "application": "test1",
+                "id": "test1",
+                "name": "test1",
                 "inputs": [],
                 "outputs": [],
-                "application": "",
-                "code": "",
+                "code": "const hey = 'hey'",
                 "blocklyXml": "",
                 "type": "",
-                "typeConfig": {
-                    "subjectPrefix": "",
-                    "triggers": {
-                        "context": [],
-                        "external": [{
-                            "configuration": {
-                                "keys": [
-                                    ""
-                                ],
-                                "modifiers": [
-                                    "",
-                                    ""
-                                ]
-                            },
-                            "externalType": ""
-                        }],
-                        "lifecycle": [],
-                        "services": []
-                    }
-                },
                 "anchors": [],
                 "usesfields": [],
                 "usesFlows": [],

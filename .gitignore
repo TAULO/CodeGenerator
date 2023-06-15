@@ -2,8 +2,6 @@ node_modules/
 
 .env
 
-# JSFiles/
+JSFiles/
 
-GenerateJSON\GeneratedJSONData\GeneratedJSONdata.json
-
-GeneratedJSONData/
+data/

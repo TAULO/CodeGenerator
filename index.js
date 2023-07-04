@@ -23,7 +23,7 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json())
 
 const jsFiles = await getJSFilesFromFolder(1000)
-
+ 
 app.post("/generateApps", (req, res) => {
     const { amount } = req.body
     res.send(generateApps(parseInt(amount)))

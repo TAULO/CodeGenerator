@@ -7,4 +7,4 @@ import getJSFilesFromFolder from "./GetJSFiles.js"
 function main() {
     generateJSON(5, 5, 5, getJSFilesFromFolder(), json)
 }
-main()
+// main()

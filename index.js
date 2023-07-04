@@ -22,7 +22,7 @@ app.use(bodyParser.urlencoded({
 // parse application/json
 app.use(bodyParser.json())
 
-const jsFiles = await getJSFilesFromFolder(1000)
+// const jsFiles = await getJSFilesFromFolder(1000)
  
 app.post("/generateApps", (req, res) => {
     const { amount } = req.body
